@@ -1103,6 +1103,10 @@ void handleJellyfishTop(struct Spec spec)
         // re-enable the depth test!!!
         glEnable(GL_DEPTH_TEST);
     }
+    else
+    {
+        drawSphere(newSpecDefaultColor(0,0,0 , 0,0,0 , 1,.2,1), 45);
+    }
     glDisable(GL_BLEND);
 
     glPopMatrix();
