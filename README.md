@@ -1,10 +1,3 @@
-# SPWI
-- add the things I agreed to
-- add the blocking reefs
-- consider the besier curve ex34 to help with movements
-- update readme
-
-
 # Final Project: Seascape
 Spencer David Wilson
 CSCI 5229 Fall 2023
@@ -22,8 +15,6 @@ if that fails:
 
 
 ## RECOMMENDED PATH
-- SPWI: REWORK
-    - from skybox: get Az, EL to note the red displacement
 - click the button: observe the thing, maybe swim around a bit (arrows and asdw)
     - take note of all the transparent objects in the scene
     - this is handled by the `struct Alpha` in SDW.h
@@ -98,9 +89,9 @@ if that fails:
 ## Self Reflection
 What a fun assignment to work on. Here is what I've done (in bullet form for easy grading):
 - I'm most proud of this (even though its a bit hacky)
-    - a method to store alpha blended methods in an array with the relevant spec, it will re-apply the definition time projection and model-view matrix then apply the spec provided before executing the method to draw the transparent object. This is used for the jellyfish, squid and red seafan, as well as for a transparent film applied to most eyeballs in the scene.
+    - a method to store alpha blended methods in an array with the relevant spec so that you can draw the opque objects and store all the instructions to draw transparent objects at a later time. It will re-apply the definition time projection and model-view matrix then apply the spec provided before executing the method to draw the transparent object. This is used for the jellyfish, squid and red seafan, as well as for a transparent film applied to most eyeballs in the scene.
     - in project.c: `_ALPHAS` is a list of length 1000
-    - throughout the code execution, spec dependent drawing instructions can be added to alphas (using project.c `updateAlphas`)
+    - throughout the code execution, spec dependent drawing instructions can be added to `_ALPHAS` (using project.c `updateAlphas`)
     - after all the opaque objects are drawn, then project.c `handleAllAlphas` will actually perform the drawings depent on code in `alpha.c` which re-apply the drawing definition time modelview and projection matrix before executing the drawing instructions with the related spec.
     - limitation: currently the list lenght is static, so it could mess up on more complex scenes. It's also a bit space intensive to store a length 1000 pointer to structs with function pointers and 16 point matrixes and so on.
     - future work: move to an object oriented language for better control of challenges like these
@@ -109,7 +100,7 @@ What a fun assignment to work on. Here is what I've done (in bullet form for eas
 - by midtern: a method in baseShapes.c 'drawTexturedRibbon' that will draw a flat shape based on the points provided, the normals are a bit off, but it looks cool on the eel so I'm fine with that
 - by midtern: a custom shader that allows for per pixel lighting on the backdrop, but it doesn't support the spot light
 - by midterm: grouper feeding station, butterfly fish actions, sharks that turn realisitically, eels, and a baitball
-- additional features: larger reefs, sea fans (alpha), squid (alpha), turtle, jellyfish(alpha)
+- additional features: larger reef systems, sea fans (alpha), squid (alpha), turtle, jellyfish(alpha)
 - significantly more involved scene with some measure of suspense and aw built into the users experience.
 - added blue fog to the scene
 
@@ -118,6 +109,7 @@ What a fun assignment to work on. Here is what I've done (in bullet form for eas
 - implement some/all of the following in some technical way (not just a texture on a low vertex ball): lion fish, jelly fish (alphas), squid (alphas), turtle, seafans, stingray
 - really fill in the space with interesting things for the diver to see: I am very unsure about where this should be in my priorities vs spending more time on advanced graphics things that would be hard to notice without reading the README, but capture the spirit of graduate work in computer graphics
 - add fog
+
 
 ## Goals left unfinished from the midterm:
 - fix the shader to work with the spotlight (spent hours on this, can't figure it out)
@@ -136,5 +128,7 @@ What a fun assignment to work on. Here is what I've done (in bullet form for eas
 
 # RESOURCES
 - great textures: https://withpoly.com/browse/textures
+- significant code samples come from the work of Willem A. (Vlakkies) Schreüder and his teem for CSCI 4228/5228 Computer Graphics course at the university of color boulder
+- Addition materials found on stackoverflow, LearnOpenGL, and Khronos (among others cited within the code base)
 
 
