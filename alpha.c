@@ -12,7 +12,8 @@
 
 
 // Defined in SDW.h
-// TODO: update to C++
+// TODO: update to C++ so this can be in a single file as a class
+//
 // typedef void (* alpha_func_type )(struct Spec);
 // struct Alpha {
 //     // handler function that tells us what to draw (expects a spec input)
@@ -31,6 +32,7 @@
  *
  * construct a new alpha object given the f and spec provided
  * NOTE: at call time this will find the current projection and model view matrix
+ *       as the definition time matrixes to reapply later
  *       so call this inside the relevant push/pop matrix set.
  */
 struct Alpha newAlpha(alpha_func_type f, struct Spec spec)
@@ -50,14 +52,14 @@ struct Alpha newAlpha(alpha_func_type f, struct Spec spec)
 /**
  * applyAlpha
  *
- * reset the matrix to what it was when the alpha was made
+ * reset the matrix to what it was when the alpha was defined
  * call the stored function f with the stored specification spec
  *
  * credit: https://stackoverflow.com/questions/29178121/store-a-matrix-created-by-a-function-opengl
  */
 void applyAlpha(struct Alpha alpha)
 {
-    // reset the matrix to what it was when the alpha was made
+    // reset the matrix to what it was when the alpha was defined
     // Switch to manipulating the projection matrix
     glMatrixMode(GL_PROJECTION);
     // apply the old projection matrix

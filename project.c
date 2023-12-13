@@ -16,7 +16,7 @@
 
 // GLOBALS
 // PERSPECTIVE
-const int __CUR_PERSPECTIVE_MODE_INIT=2;
+const int __CUR_PERSPECTIVE_MODE_INIT=1;
 int _CUR_PERSPECTIVE_MODE;
 int _PREHELP_CUR_PERSPECTIVE_MODE;
 const int __ORTHOGONAL_MODE=0;
@@ -37,11 +37,12 @@ bool _NIGHT=false;
 bool _PREHELP_FLASHLIGHT_STATE;
 bool _FLASHLIGHT=true;
 // OBJECTS
-const int __OBJECT_INDEX_INIT=9;
+const int __OBJECT_INDEX_INIT=0;
+const int __SCENE_INDEX=4;
 // NEED TO USE DEFINE DUE TO DIFFERENT C VERSIONS!!!
 // Credit: Willem A. (Vlakkies) Schreüder
 // const int __OBJECT_INDEX_MAX=x;
-# define __OBJECT_INDEX_MAX 9
+# define __OBJECT_INDEX_MAX 13
 int _OBJECT_INDEX;
 const bool __OBJECT_MODE_INIT=true;
 bool _OBJECT_MODE;
@@ -114,6 +115,8 @@ double _SIN_STEP;
 double _PREVIOUS_TIME=0;
 const double __TIME_STEP=100;
 double _RANDOM_DOUBLES[1000];
+const bool __INIT_FIRST_SEASCAPE_CHANGED=false;
+bool _FIRST_SEASCAPE_CHANGED=false;
 
 
 /**
@@ -184,6 +187,8 @@ void initGlobals()
     _OBJECT_MODE = __OBJECT_MODE_INIT;
     _OBJECT_INDEX = __OBJECT_INDEX_INIT;
 
+    _FIRST_SEASCAPE_CHANGED=__INIT_FIRST_SEASCAPE_CHANGED;
+
     updateFov();
     updateRandomDoubles();
 
@@ -193,6 +198,8 @@ void initGlobals()
     _EX = __EX_INIT;
     _EY = __EY_INIT;
     _EZ = __EZ_INIT;
+
+
 }
 
 
@@ -1819,7 +1826,7 @@ void displayProgram()
 
     // draw the current object grouping of interest
     // special work to add fog if drawing the full scene
-    if (_OBJECT_INDEX == __OBJECT_INDEX_MAX)
+    if (_OBJECT_INDEX == __SCENE_INDEX)
     {
         // enable fog
         glEnable(GL_FOG);
@@ -1962,7 +1969,7 @@ void display()
     // set text at bottom left of screen
     glWindowPos2i(5, 5);  // reset raster position
     glColor4f(1,1,1,1);
-    dispText("h - help | mode: %d, AZ: %d, EL: %d", _CUR_PERSPECTIVE_MODE, _AZIMUTH, _ELEVATION);
+    dispText("h - help | AZ: %d, EL: %d", _AZIMUTH, _ELEVATION);
 
     errorCheck("display");
     glFlush();
@@ -2201,7 +2208,6 @@ void key(unsigned char ch, int x, int y)
         else if (ch == '0')
         {
             initGlobals();
-            _SEASCAPE_LOCATOR[0]();
         }
         else if (ch == '1') _SEASCAPE_LOCATOR[0]();
         else if (ch == '2') _SEASCAPE_LOCATOR[1]();
@@ -2212,8 +2218,8 @@ void key(unsigned char ch, int x, int y)
         else if (ch == '7') _SEASCAPE_LOCATOR[6]();
         else if (ch == '8') _SEASCAPE_LOCATOR[7]();
         else if (ch == '9') _SEASCAPE_LOCATOR[8]();
-        else if (ch == 'o') updateObjectIndex(-1);
-        else if (ch == 'O') updateObjectIndex(+1);
+        else if (ch == 'o') updateObjectIndex(+1);
+        else if (ch == 'O') updateObjectIndex(-1);
         else if (ch == 'a') updateEye(-movement,0);
         else if (ch == 's') updateEye(0,-movement);
         else if (ch == 'w') updateEye(0,+movement);
@@ -2336,7 +2342,6 @@ void initSeaScapeLocator()
     _SEASCAPE_LOCATOR[i] = &setEelSeaScapeLocation ; i++;
     _SEASCAPE_LOCATOR[i] = &setTurtleSeaScapeLocation ; i++;
     _SEASCAPE_LOCATOR[i] = &setBaitBallSeaScapeLocation ; i++;
-    _SEASCAPE_LOCATOR[0]();
 }
 
 
@@ -2347,6 +2352,42 @@ void initSeaScapeLocator()
  *
  * Credit for void pointers: https://stackoverflow.com/questions/5309859/how-to-define-an-array-of-functions-in-c
  */
+void makeEye0() {
+    drawTexturedSphere(newSpecDefaultColor(0,0,0 , 0,0,0 , .5,.5,.5), _TEX_EYE, GL_MODULATE, 25);
+}
+void makeEye1() {
+    drawTexturedSphere(newSpecDefaultColor(0,0,0 , 0,0,0 , .5,.5,.5), _TEX_EYE, GL_MODULATE, 25);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+    glColor4f(.8,.8,.8,.5);
+    drawSphere(newSpecDefaultColor(0,0,0 , 0,0,0 , .6,.6,.6), 1);
+    glDisable(GL_BLEND);
+}
+void makeEyeError() {
+    drawTexturedSphere(newSpecDefaultColor(.5,.5,.5 , 0,0,0 , .5,.5,.5), _TEX_EYE, GL_MODULATE, 25);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+    glColor4f(.8,.8,.8,.5);
+    drawSphere(newSpecDefaultColor(0,0,0 , 0,0,0 , .6,.6,.6), 1);
+    glDisable(GL_BLEND);
+}
+void makeManyEyes() {
+    drawEye(newSpecDefaultColor(.5,.5,.5 , 0,0,0 , .2,.2,.2));
+    drawEye(newSpecDefaultColor(-.5,-.5,-.5 , 0,0,0 , .3,.3,.3));
+    drawEye(newSpecDefaultColor(.5,.5,-.5 , 0,0,0 , .4,.4,.4));
+    drawEye(newSpecDefaultColor(.5,-.5,.5 , 0,0,0 , .5,.5,.5));
+}
+void makeSeaScape() {
+    if (!_FIRST_SEASCAPE_CHANGED)
+    {
+        _CUR_PERSPECTIVE_MODE=2;
+        updateFov();
+        _SEASCAPE_LOCATOR[0]();
+        _FIRST_SEASCAPE_CHANGED = true;
+    }
+    drawSeaScape();
+}
+void makeBackdrop() { drawBackdrop(baseSpec()); }
 void makeTwinTurtles() { drawTwinTurtles(newSpecDefaultColor(0,0,0 , 0,0,0 , 2,2,2)); }
 void makeEel() { drawEel(baseSpec()); }
 void makeBaitBall() { drawBaitBall(baseSpec()); }
@@ -2358,8 +2399,6 @@ void makeJellyfish() {
 void makeButterflyAnimation() { drawButterflyAnimation(baseSpec()); }
 void makeGrouperStation() { drawGrouperStation(baseSpec()); }
 void makeBlockingReef() { drawBlockingReef(baseSpec()); }
-void makeBackdrop() { drawBackdrop(baseSpec()); }
-void makeSeaScape() { drawSeaScape(); }
 /**
  * initObjects
  *
@@ -2369,16 +2408,20 @@ void makeSeaScape() { drawSeaScape(); }
 void initObjects()
 {
     int i = 0;
+    _OBJECTS[i] = &makeEye0 ; i++;
+    _OBJECTS[i] = &makeEye1 ; i++;
+    _OBJECTS[i] = &makeEyeError ; i++;
+    _OBJECTS[i] = &makeManyEyes ; i++;
+    _OBJECTS[i] = &makeSeaScape ; i++;
+    _OBJECTS[i] = &makeBackdrop ; i++;
+    _OBJECTS[i] = &makeBlockingReef ; i++;
+    _OBJECTS[i] = &makeBaitBall ; i++;
+    _OBJECTS[i] = &makeGrouperStation ; i++;
+    _OBJECTS[i] = &makeButterflyAnimation ; i++;
     _OBJECTS[i] = &makeTwinTurtles ; i++;
     _OBJECTS[i] = &makeEel ; i++;
-    _OBJECTS[i] = &makeBaitBall ; i++;
     _OBJECTS[i] = &makeSquid ; i++;
     _OBJECTS[i] = &makeJellyfish ; i++;
-    _OBJECTS[i] = &makeButterflyAnimation ; i++;
-    _OBJECTS[i] = &makeGrouperStation ; i++;
-    _OBJECTS[i] = &makeBlockingReef ; i++;
-    _OBJECTS[i] = &makeBackdrop ; i++;
-    _OBJECTS[i] = &makeSeaScape ; i++;
 }
 
 

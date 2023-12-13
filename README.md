@@ -14,52 +14,55 @@ if that fails:
 - run: `./project`
 
 
-## RECOMMENDED PATH
-- click the button: observe the thing, maybe swim around a bit (arrows and asdw)
-    - take note of all the transparent objects in the scene
-    - this is handled by the `struct Alpha` in SDW.h
-    - and the code in `alpha.c`
+## RECOMMENDED PATH (see CONTRIBUTIONs below)
+- click the button: observe the thing, we start by observing the eye in all its glory, but we want a tranparent film
+- o: now they eye has a transparent layer, we'll want to make lots of eyes in differnt places
+- o: now we see the eye and its tranparent layers are not in the right place, we should fix this
+    - NOTE: this is dummied up for presentation purposes, the real code would require some change to alpha.c
+- o: now we see many eyes with their tranparent layers in the right place 
+    - this is enabled through `_ALPHAS`, updateAlphas, handleAllAlphas, and the alpha.c file methods
+        - in alpha.c: note capture of definition model view and projection matrix and later application
     - the code is basically written as a thunk/promise that we execute later
     - we execute this only after the non-alpha objects are all drawn in the scene
+    - CONTRIBUTION: a method to delay drawing objects that need ALPHA blending
+- o: enter the big scene, you can swim around the scene with arrows and asdw or jump ahead to the points below. As you go, note all the transparent elements on eyes, sea fans, squid and jellyfish
 - h: see the help menu, when in doubt, press h
-- h: close the menu to move forward
-- <nothing>: note the red sea fan is transparent (on your right)
+- h: close the menu
+- CONTRIBUTION: in the following scene a flashlight is enabled for spot directional lighting
 - 2: see the butterfly fish perfectly kiss the top of the staghorn coral
-- 3: see the jellyfish (fully transparent objects)
+- 3: see the jellyfish (fully transparent objects), note the red sea fans in the background are also transparent objects
 - 4: see the grouper and the shrimp coming in its mouth and out of its gills (note that the eyes have a transparent film on them)
-- 5: see the squid as they change colors about half of the time. They eyes have a transparent film and the side fins are transparent.
-- 6: observe the sharks swimming in harmony with reasonable angles. observe the tranparent film on the eyes. Observe the effect of fog in the scene (as the shark far away is difficult to make out).
-- 7: see the eel, it's hiding in a nook (we'll see the lighting soon enough)
+- 5: see the squid as they change colors about half of the time. Thier have a transparent film and the side fins are transparent.
+- 6: observe the sharks swimming in harmony with reasonable angles. observe the tranparent film on the eyes. Observe the effect of fog in the scene (as the shark far away is difficult to make out)(we can also see many jelly fish in the background)
+- 7: see the eel, it's hiding in a nook (we'll see the lighting soon enough) 
 - 8: see the turtles doing some synchronized swimming. press and hold "w" to swim down the turtles center. Note the tranparent eye film again
-- 9: see the bait ball, it's wild. recommend that you swim into it and watch a bit. You might notice the eel and grouper here.
+- 9: see the bait ball, it's wild. recommend that you swim into it and watch a bit. You might notice the eel and grouper here. (just a texture on a low-point sphere)
     - p: pause the animation to really check out the bait ball, note that each fish is a texture on a low vertex sphere
     - p: resume play mode
 - m: see the orthoganal view of the scene
 - m: see the perspective view of the scene
-- NOW: we can look at the objects of the scene and their lighting in isolation
 - o: see the backdrop of the scene without all the critters (can check normals here)
     - press 8
     - as the light comes around note that the upper sand bank is more red
-    - the custom shader is removing red at lower depths (recall, can you p to pause/play the light)
-- o: see the blocking reef structure, note this includes transparent red sea fans
-- o: see the grouper alone, likely easier to see the animation now
-- o: see the butterfly fish kissing its two reef sections
-- o: see the jellyfish, check out its shape and colors, I think this is particularly fun to look at
-- o: see the squid, check out the transparency of its fins
-- o: check out the bait ball, from certain angles this shows interesting shapes of the random number generator (press 8)
+    - CONTRIBUTION: a custom shader is removing red at lower depths (recall, can you press 'p' to pause/play the light)
+- o: see the blocking reef structure, note this includes transparent red sea fans (3 for best angle)
+- o: check out the bait ball, from certain angles this shows interesting shapes of the random number generator (press 8 to see what reminds me of chistmas trees - an overhead view)
+- o: see the grouper alone, likely easier to see the animation now, use arrows to view how you want
+- o: see the butterfly fish kissing its two reef sections (4 for best angle)
+- o: see the turtles spinning around the y axis (8 for best angle)
 - o: see the eel
-    - HERE: be sure to check out the eel lighting and shape
-    - key tasking was to make this tubing and ribbon structure
-- o: see the turtles spinning around the y axis
+    - CONTRIBUTION: tubular structure, ribbon underbody
+- o: see the squid, check out the transparency of its fins
+- o: see the jellyfish, check out its shape and colors, I think this is particularly fun to look at (the tenticles are a series of low point spheres)
 
 
 ## Default mode
-- play mode with all objects
-- first person perspective view
-- centered near the butterfly fish as a starting point for the dive
+- play mode with an eye showing
+- projection view
 - in day mode
 - with flashlight on
 - axis disabled
+- fog disabled unless you are in the full seascape
 
 
 ## Key bindings:
@@ -88,6 +91,7 @@ if that fails:
 
 ## Self Reflection
 What a fun assignment to work on. Here is what I've done (in bullet form for easy grading):
+- RECOMMENDED PATH highlights all of the CONTRIBUTIONS, below are just more explantion if it helps in your grading decision
 - I'm most proud of this (even though its a bit hacky)
     - a method to store alpha blended methods in an array with the relevant spec so that you can draw the opque objects and store all the instructions to draw transparent objects at a later time. It will re-apply the definition time projection and model-view matrix then apply the spec provided before executing the method to draw the transparent object. This is used for the jellyfish, squid and red seafan, as well as for a transparent film applied to most eyeballs in the scene.
     - in project.c: `_ALPHAS` is a list of length 1000
@@ -100,14 +104,14 @@ What a fun assignment to work on. Here is what I've done (in bullet form for eas
 - by midtern: a method in baseShapes.c 'drawTexturedRibbon' that will draw a flat shape based on the points provided, the normals are a bit off, but it looks cool on the eel so I'm fine with that
 - by midtern: a custom shader that allows for per pixel lighting on the backdrop, but it doesn't support the spot light
 - by midterm: grouper feeding station, butterfly fish actions, sharks that turn realisitically, eels, and a baitball
-- additional features: larger reef systems, sea fans (alpha), squid (alpha), turtle, jellyfish(alpha)
+- additional features: larger reef systems, sea fans (alpha), squid (alpha), turtle, jellyfish(alpha), addition of transparent film on most of the eyes in the scene
 - significantly more involved scene with some measure of suspense and aw built into the users experience.
 - added blue fog to the scene
 
 
 ## Goals completed since the midterm:
 - implement some/all of the following in some technical way (not just a texture on a low vertex ball): lion fish, jelly fish (alphas), squid (alphas), turtle, seafans, stingray
-- really fill in the space with interesting things for the diver to see: I am very unsure about where this should be in my priorities vs spending more time on advanced graphics things that would be hard to notice without reading the README, but capture the spirit of graduate work in computer graphics
+    - it took a lot of trial and error to figure out this handling of the alphas and blending
 - add fog
 
 
@@ -121,9 +125,9 @@ What a fun assignment to work on. Here is what I've done (in bullet form for eas
 
 
 # TIMING
-48 hours total
+50 hours total
 32 hours so far as best as I can determine from my calendar (through 11/29)
-16 hours after the project review
+18 hours after the project review
 
 
 # RESOURCES
