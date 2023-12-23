@@ -1213,7 +1213,9 @@ void drawSquidTenticle(struct Spec spec)
     glPushMatrix();
     applySpec(spec);
     const int pivots = 4;
-    struct Coord tubeArray[pivots] = {
+    // // clang only
+    // struct Coord tubeArray[pivots] = {
+    struct Coord tubeArray[4] = {
         newCoord(0,0,0),
         newCoord(-.2,0,-.1),
         newCoord(-.5,0,-.2),
@@ -1238,7 +1240,9 @@ void handleSquidSides(struct Spec spec)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE);
     const int pointsCount = 18;
-    struct Coord points[pointsCount] = {
+    // // clang only
+    // struct Coord points[pointsCount] = {
+    struct Coord points[18] = {
         newCoord(-1.00,+0.00,0),
         newCoord(-1.00,+0.20,0),
 
